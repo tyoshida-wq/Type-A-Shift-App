@@ -126,7 +126,7 @@ app.get('/', (c) => {
                 <nav class="hidden md:flex gap-1 bg-surface-lighter/50 p-1 rounded-full">
                     <a href="/" class="px-4 py-1.5 rounded-full bg-primary text-background-dark text-sm font-bold shadow-lg shadow-primary/20">ダッシュボード</a>
                     <a href="/staff" class="px-4 py-1.5 rounded-full text-slate-300 hover:bg-white/5 hover:text-white text-sm font-medium transition-colors">スタッフ管理</a>
-                    <button class="px-4 py-1.5 rounded-full text-slate-300 hover:bg-white/5 hover:text-white text-sm font-medium transition-colors">実績報告</button>
+                    <a href="/reports" class="px-4 py-1.5 rounded-full text-slate-300 hover:bg-white/5 hover:text-white text-sm font-medium transition-colors">実績報告</a>
                     <button class="px-4 py-1.5 rounded-full text-slate-300 hover:bg-white/5 hover:text-white text-sm font-medium transition-colors">設定</button>
                 </nav>
                 <div class="h-8 w-px bg-white/10"></div>
@@ -600,6 +600,7 @@ app.get('/staff', (c) => {
                 <nav class="flex gap-3">
                     <a href="/" class="px-4 py-1.5 rounded-full text-slate-300 hover:bg-white/5 hover:text-white text-sm font-medium transition-colors">ダッシュボード</a>
                     <a href="/staff" class="px-4 py-1.5 rounded-full bg-primary text-background-dark text-sm font-bold shadow-lg shadow-primary/20">スタッフ管理</a>
+                    <a href="/reports" class="px-4 py-1.5 rounded-full text-slate-300 hover:bg-white/5 hover:text-white text-sm font-medium transition-colors">実績報告</a>
                 </nav>
                 <div class="h-6 w-px bg-surface-border"></div>
                 <div class="flex items-center gap-3">
@@ -835,6 +836,303 @@ app.get('/staff', (c) => {
                 </div>
             </main>
         </div>
+    </body>
+    </html>
+  `)
+})
+
+// Reports page route
+app.get('/reports', (c) => {
+  return c.html(`
+    <!DOCTYPE html>
+    <html class="light" lang="ja">
+    <head>
+        <meta charset="utf-8"/>
+        <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+        <title>実績報告画面 (Performance Report)</title>
+        <link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@300;400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet"/>
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+        <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+        <script id="tailwind-config">
+            tailwind.config = {
+                darkMode: "class",
+                theme: {
+                    extend: {
+                        colors: {
+                            "primary": "#2bee79",
+                            "primary-dark": "#23c463",
+                            "background-light": "#f6f8f7",
+                            "background-dark": "#102217",
+                            "surface-light": "#ffffff",
+                            "surface-dark": "#1c2e24",
+                            "text-main": "#111814",
+                            "text-secondary": "#618971",
+                        },
+                        fontFamily: {
+                            "display": ["Spline Sans", "Noto Sans JP", "sans-serif"],
+                            "body": ["Spline Sans", "Noto Sans JP", "sans-serif"],
+                        },
+                        borderRadius: {
+                            "DEFAULT": "0.375rem", 
+                            "lg": "0.5rem", 
+                            "xl": "0.75rem", 
+                            "2xl": "1rem", 
+                            "full": "9999px"
+                        },
+                    },
+                },
+            }
+        </script>
+        <style>
+            body {
+                font-family: "Spline Sans", "Noto Sans JP", sans-serif;
+            }
+            .donut-ring {
+                transition: stroke-dashoffset 0.35s;
+                transform: rotate(-90deg);
+                transform-origin: 50% 50%;
+            }
+        </style>
+    </head>
+    <body class="bg-background-light dark:bg-background-dark min-h-screen flex flex-col text-text-main">
+        <!-- Top Navigation -->
+        <header class="sticky top-0 z-50 w-full bg-surface-light dark:bg-surface-dark border-b border-[#f0f4f2] dark:border-[#2a4034]">
+            <div class="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between h-16">
+                    <!-- Logo & Brand -->
+                    <div class="flex items-center gap-3">
+                        <div class="size-8 text-primary flex items-center justify-center rounded-lg bg-background-light dark:bg-background-dark">
+                            <span class="material-symbols-outlined text-[24px]">grid_view</span>
+                        </div>
+                        <h2 class="text-xl font-bold tracking-tight text-text-main dark:text-white">ShiftMgr AI</h2>
+                    </div>
+                    <!-- Right Actions -->
+                    <div class="flex items-center gap-4">
+                        <div class="hidden md:flex gap-2">
+                            <button class="flex items-center justify-center size-10 rounded-full hover:bg-background-light dark:hover:bg-background-dark transition-colors text-text-main dark:text-white">
+                                <span class="material-symbols-outlined text-[20px]">notifications</span>
+                            </button>
+                            <button class="flex items-center justify-center size-10 rounded-full hover:bg-background-light dark:hover:bg-background-dark transition-colors text-text-main dark:text-white">
+                                <span class="material-symbols-outlined text-[20px]">settings</span>
+                            </button>
+                            <button class="flex items-center justify-center size-10 rounded-full hover:bg-background-light dark:hover:bg-background-dark transition-colors text-text-main dark:text-white">
+                                <span class="material-symbols-outlined text-[20px]">help</span>
+                            </button>
+                        </div>
+                        <div class="h-8 w-[1px] bg-gray-200 dark:bg-gray-700 hidden md:block"></div>
+                        <button class="flex items-center gap-2 pl-1 pr-2 py-1 rounded-full hover:bg-background-light dark:hover:bg-background-dark transition-colors">
+                            <div class="size-8 rounded-full bg-cover bg-center border border-gray-100" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBIvING5vstA4zqikjAkXB3ajNHmi-3mA3k880Chq6X5jQ1Z_nvu-YzPMYSUDqb5sm8toWUtFdDVqnXR0NmA3i9OLg4QvaJsGBOEH3J4f6Xc2DYyzexzaDiTZszIshI4O5kdaRYe3tIoTnh2kiUK7D51P8lQLBMg-GISMtUKCpDI9yZbsvMgrBbF6UDVnpwmt6mWpMjqnuDZx9ObHzVOV018jy_IbwGZ5NelyemSlCHNvU7A-9N54QbvFotpyLm5vd49Wl84xeSs-Q4");'></div>
+                            <span class="text-sm font-medium hidden sm:block dark:text-white">山田 管理者</span>
+                            <span class="material-symbols-outlined text-[18px] text-gray-500">expand_more</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="flex-1 w-full max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <!-- Page Heading & Controls -->
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
+                <div class="flex flex-col gap-1">
+                    <h1 class="text-3xl md:text-4xl font-bold text-text-main dark:text-white tracking-tight">実績報告</h1>
+                    <div class="flex items-center gap-2 text-text-secondary dark:text-gray-400 mt-1">
+                        <span class="material-symbols-outlined text-[20px]">calendar_month</span>
+                        <span class="text-lg font-medium">2023年 10月度</span>
+                        <button class="text-sm text-primary font-bold hover:underline ml-2">変更</button>
+                    </div>
+                </div>
+                <div class="flex gap-3">
+                    <button class="flex items-center justify-center gap-2 h-12 px-6 rounded-lg bg-primary hover:bg-primary-dark transition-colors text-text-main font-bold shadow-sm shadow-primary/20">
+                        <span class="material-symbols-outlined">download</span>
+                        <span>一括ダウンロード</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Summary Cards Section (KPIs) -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                <!-- Card 1: Operation Rate -->
+                <div class="group bg-surface-light dark:bg-surface-dark rounded-xl p-6 shadow-[0_2px_8px_rgba(0,0,0,0.04)] dark:shadow-none dark:border dark:border-gray-700 flex flex-col justify-between relative overflow-hidden">
+                    <div class="flex justify-between items-start mb-4 z-10">
+                        <div>
+                            <p class="text-sm font-bold text-text-secondary dark:text-gray-400 uppercase tracking-wider mb-1">稼働率</p>
+                            <div class="flex items-baseline gap-2">
+                                <span class="text-4xl font-bold text-text-main dark:text-white font-display">95%</span>
+                                <span class="text-sm font-medium text-primary flex items-center">
+                                    <span class="material-symbols-outlined text-[16px]">trending_up</span>
+                                    +2.4%
+                                </span>
+                            </div>
+                        </div>
+                        <div class="size-10 rounded-full bg-background-light dark:bg-gray-800 flex items-center justify-center text-text-secondary">
+                            <span class="material-symbols-outlined">donut_large</span>
+                        </div>
+                    </div>
+                    <!-- Chart Visualization -->
+                    <div class="flex items-center gap-6 mt-2">
+                        <div class="relative size-24">
+                            <svg class="size-full" height="100" viewbox="0 0 100 100" width="100">
+                                <circle class="text-gray-100 dark:text-gray-700 stroke-current" cx="50" cy="50" fill="transparent" r="40" stroke-width="12"></circle>
+                                <circle class="text-primary progress-ring__circle stroke-current donut-ring" cx="50" cy="50" fill="transparent" r="40" stroke-dasharray="251.2" stroke-dashoffset="12.56" stroke-linecap="round" stroke-width="12"></circle>
+                            </svg>
+                            <div class="absolute inset-0 flex items-center justify-center flex-col">
+                                <span class="text-xs font-bold text-text-secondary">目標</span>
+                                <span class="text-xs font-bold text-text-main dark:text-white">100%</span>
+                            </div>
+                        </div>
+                        <div class="flex flex-col gap-2 text-sm flex-1">
+                            <div class="flex justify-between items-center">
+                                <span class="text-text-secondary">実績</span>
+                                <span class="font-bold">285時間</span>
+                            </div>
+                            <div class="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-1.5">
+                                <div class="bg-primary h-1.5 rounded-full" style="width: 95%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2: Placement Ratio -->
+                <div class="bg-surface-light dark:bg-surface-dark rounded-xl p-6 shadow-[0_2px_8px_rgba(0,0,0,0.04)] dark:shadow-none dark:border dark:border-gray-700 flex flex-col justify-between">
+                    <div class="flex justify-between items-start mb-2">
+                        <p class="text-sm font-bold text-text-secondary dark:text-gray-400 uppercase tracking-wider">平均配置比率</p>
+                        <div class="size-10 rounded-full bg-background-light dark:bg-gray-800 flex items-center justify-center text-text-secondary">
+                            <span class="material-symbols-outlined">groups</span>
+                        </div>
+                    </div>
+                    <div class="flex-1 flex items-center">
+                        <span class="text-5xl font-bold text-text-main dark:text-white tracking-tighter font-display">8.2 : 1</span>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700 flex items-center gap-2">
+                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                            <span class="material-symbols-outlined text-[14px]">check_circle</span>
+                            基準達成
+                        </span>
+                        <span class="text-xs text-text-secondary">（基準 7.5:1）</span>
+                    </div>
+                </div>
+
+                <!-- Card 3: Unfulfilled Days -->
+                <div class="bg-surface-light dark:bg-surface-dark rounded-xl p-6 shadow-[0_2px_8px_rgba(0,0,0,0.04)] dark:shadow-none dark:border dark:border-gray-700 flex flex-col justify-between border-l-4 border-l-primary">
+                    <div class="flex justify-between items-start mb-2">
+                        <p class="text-sm font-bold text-text-secondary dark:text-gray-400 uppercase tracking-wider">未充足日数</p>
+                        <div class="size-10 rounded-full bg-green-50 dark:bg-green-900/30 flex items-center justify-center text-primary">
+                            <span class="material-symbols-outlined">event_available</span>
+                        </div>
+                    </div>
+                    <div class="flex-1 flex items-center gap-3">
+                        <span class="text-5xl font-bold text-text-main dark:text-white font-display">0</span>
+                        <span class="text-2xl font-bold text-text-secondary pb-1">日</span>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
+                        <p class="text-sm text-text-secondary">
+                            減算対象となる未充足日はありません。<br/>
+                            <span class="font-bold text-primary">正常な状態です。</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reports List Section -->
+            <div class="flex flex-col gap-6">
+                <div class="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 pb-4">
+                    <h2 class="text-xl font-bold text-text-main dark:text-white flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary">description</span>
+                        帳票一覧 (Reports)
+                    </h2>
+                    <div class="flex gap-2">
+                        <button aria-label="List view" class="p-2 text-text-secondary hover:text-text-main transition-colors">
+                            <span class="material-symbols-outlined">view_list</span>
+                        </button>
+                        <button aria-label="Grid view" class="p-2 text-primary bg-primary/10 rounded transition-colors">
+                            <span class="material-symbols-outlined">grid_view</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Report Card 1 -->
+                    <div class="bg-surface-light dark:bg-surface-dark border border-gray-100 dark:border-gray-700 rounded-xl p-5 hover:shadow-md transition-shadow flex flex-col h-full">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="p-3 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 rounded-lg">
+                                <span class="material-symbols-outlined text-[28px]">assignment_ind</span>
+                            </div>
+                            <span class="px-2 py-1 bg-gray-100 dark:bg-gray-800 text-xs font-bold text-gray-600 dark:text-gray-400 rounded">月次</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-text-main dark:text-white mb-2">サービス提供実績記録票</h3>
+                        <p class="text-sm text-text-secondary dark:text-gray-400 mb-6 flex-1">
+                            利用者ごとのサービス提供実績を記録した月次帳票です。国保連請求の根拠資料となります。
+                        </p>
+                        <div class="flex gap-3 mt-auto">
+                            <button class="flex-1 h-10 flex items-center justify-center gap-2 rounded border border-gray-200 dark:border-gray-600 text-sm font-bold text-text-main dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                                <span class="material-symbols-outlined text-[18px]">visibility</span>
+                                プレビュー
+                            </button>
+                            <button class="flex-1 h-10 flex items-center justify-center gap-2 rounded bg-text-main dark:bg-white text-white dark:text-black text-sm font-bold hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors">
+                                <span class="material-symbols-outlined text-[18px]">file_download</span>
+                                DL
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Report Card 2 -->
+                    <div class="bg-surface-light dark:bg-surface-dark border border-gray-100 dark:border-gray-700 rounded-xl p-5 hover:shadow-md transition-shadow flex flex-col h-full">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="p-3 bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400 rounded-lg">
+                                <span class="material-symbols-outlined text-[28px]">edit_note</span>
+                            </div>
+                            <span class="px-2 py-1 bg-gray-100 dark:bg-gray-800 text-xs font-bold text-gray-600 dark:text-gray-400 rounded">日次</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-text-main dark:text-white mb-2">業務日報</h3>
+                        <p class="text-sm text-text-secondary dark:text-gray-400 mb-6 flex-1">
+                            スタッフの業務内容、申し送り事項を記録した日報です。監査時に提示が必要です。
+                        </p>
+                        <div class="flex gap-3 mt-auto">
+                            <button class="flex-1 h-10 flex items-center justify-center gap-2 rounded border border-gray-200 dark:border-gray-600 text-sm font-bold text-text-main dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                                <span class="material-symbols-outlined text-[18px]">visibility</span>
+                                プレビュー
+                            </button>
+                            <button class="flex-1 h-10 flex items-center justify-center gap-2 rounded bg-text-main dark:bg-white text-white dark:text-black text-sm font-bold hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors">
+                                <span class="material-symbols-outlined text-[18px]">file_download</span>
+                                DL
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Report Card 3 -->
+                    <div class="bg-surface-light dark:bg-surface-dark border border-gray-100 dark:border-gray-700 rounded-xl p-5 hover:shadow-md transition-shadow flex flex-col h-full">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="p-3 bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 rounded-lg">
+                                <span class="material-symbols-outlined text-[28px]">local_shipping</span>
+                            </div>
+                            <span class="px-2 py-1 bg-gray-100 dark:bg-gray-800 text-xs font-bold text-gray-600 dark:text-gray-400 rounded">随時</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-text-main dark:text-white mb-2">送迎運行記録</h3>
+                        <p class="text-sm text-text-secondary dark:text-gray-400 mb-6 flex-1">
+                            送迎車両ごとの運行時間、乗車利用者、ドライバーを記録した運行記録簿です。
+                        </p>
+                        <div class="flex gap-3 mt-auto">
+                            <button class="flex-1 h-10 flex items-center justify-center gap-2 rounded border border-gray-200 dark:border-gray-600 text-sm font-bold text-text-main dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                                <span class="material-symbols-outlined text-[18px]">visibility</span>
+                                プレビュー
+                            </button>
+                            <button class="flex-1 h-10 flex items-center justify-center gap-2 rounded bg-text-main dark:bg-white text-white dark:text-black text-sm font-bold hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors">
+                                <span class="material-symbols-outlined text-[18px]">file_download</span>
+                                DL
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="mt-auto border-t border-gray-200 dark:border-gray-800 bg-surface-light dark:bg-surface-dark py-6">
+            <div class="max-w-[1280px] mx-auto px-4 text-center text-xs text-text-secondary dark:text-gray-500">
+                © 2023 ShiftMgr AI. All rights reserved. Type A Business Establishment Management System.
+            </div>
+        </footer>
     </body>
     </html>
   `)
