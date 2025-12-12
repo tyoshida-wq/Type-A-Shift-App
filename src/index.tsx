@@ -1178,9 +1178,9 @@ app.get('/settings', (c) => {
             }
         </script>
     </head>
-    <body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white font-body min-h-screen flex flex-col">
+    <body class="bg-background-light text-gray-800">
         <!-- Header -->
-        <header class="flex items-center justify-between border-b border-white/5 bg-surface-dark px-6 py-3 shrink-0 z-20">
+        <header class="flex items-center justify-between border-b border-white/5 bg-surface-dark px-6 py-3 shrink-0 z-20 sticky top-0">
             <div class="flex items-center gap-4 text-white">
                 <div class="flex items-center justify-center size-10 rounded-xl bg-primary/10 text-primary">
                     <span class="material-symbols-outlined text-[28px]">smart_toy</span>
