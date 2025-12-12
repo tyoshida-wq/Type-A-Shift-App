@@ -119,7 +119,7 @@ app.get('/', (c) => {
                 </div>
                 <div>
                     <h1 class="text-white text-lg font-bold leading-tight">AIシフトマネージャー</h1>
-                    <p class="text-slate-400 text-xs font-medium">就労継続支援A型版 • v2.6</p>
+                    <p class="text-slate-400 text-xs font-medium">就労継続支援A型版 • v2.7</p>
                 </div>
             </div>
             <div class="flex items-center gap-6">
@@ -565,17 +565,21 @@ app.get('/staff', (c) => {
                     extend: {
                         colors: {
                             "primary": "#2bee79",
+                            "primary-dark": "#1fa855",
                             "background-light": "#f6f8f7",
-                            "background-dark": "#111814",
-                            "surface-dark": "#1c2720",
-                            "surface-border": "#28392f",
-                            "text-secondary": "#9db9a8",
+                            "background-dark": "#101418",
+                            "surface-dark": "#1c232b",
+                            "surface-lighter": "#2a343e",
+                            "violation": "#fb4e6d",
+                            "warning": "#fbbd23",
+                            "member-badge": "#60a5fa",
+                            "staff-badge": "#34d399",
                         },
                         fontFamily: {
-                            "display": ["Spline Sans", "Noto Sans JP", "sans-serif"],
-                            "body": ["Spline Sans", "Noto Sans JP", "sans-serif"],
+                            "display": ["Spline Sans", "sans-serif"],
+                            "body": ["Noto Sans JP", "Noto Sans", "sans-serif"]
                         },
-                        borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                        borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
                     },
                 },
             }
@@ -588,27 +592,31 @@ app.get('/staff', (c) => {
             .filled-icon { font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
         </style>
     </head>
-    <body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white font-display antialiased overflow-hidden h-screen flex flex-col">
-        <header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-surface-border px-6 py-3 bg-surface-dark shrink-0">
+    <body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white font-body h-screen flex flex-col overflow-hidden">
+        <header class="flex items-center justify-between border-b border-white/5 bg-surface-dark px-6 py-3 shrink-0 z-20">
             <div class="flex items-center gap-4 text-white">
-                <div class="size-8 flex items-center justify-center text-primary">
-                    <span class="material-symbols-outlined filled-icon" style="font-size: 32px;">auto_awesome</span>
+                <div class="flex items-center justify-center size-10 rounded-xl bg-primary/10 text-primary">
+                    <span class="material-symbols-outlined text-[28px]">smart_toy</span>
                 </div>
-                <h2 class="text-white text-xl font-bold leading-tight tracking-[-0.015em]">ShiftAI Manager</h2>
+                <div>
+                    <h1 class="text-white text-lg font-bold leading-tight">AIシフトマネージャー</h1>
+                    <p class="text-slate-400 text-xs font-medium">就労継続支援A型版 • v2.7</p>
+                </div>
             </div>
-            <div class="flex flex-1 justify-end gap-6 items-center">
-                <nav class="flex gap-3">
+            <div class="flex items-center gap-6">
+                <nav class="hidden md:flex gap-1 bg-surface-lighter/50 p-1 rounded-full">
                     <a href="/" class="px-4 py-1.5 rounded-full text-slate-300 hover:bg-white/5 hover:text-white text-sm font-medium transition-colors">ダッシュボード</a>
                     <a href="/staff" class="px-4 py-1.5 rounded-full bg-primary text-background-dark text-sm font-bold shadow-lg shadow-primary/20">スタッフ管理</a>
                     <a href="/reports" class="px-4 py-1.5 rounded-full text-slate-300 hover:bg-white/5 hover:text-white text-sm font-medium transition-colors">実績報告</a>
+                    <a href="/settings" class="px-4 py-1.5 rounded-full text-slate-300 hover:bg-white/5 hover:text-white text-sm font-medium transition-colors">設定</a>
                 </nav>
-                <div class="h-6 w-px bg-surface-border"></div>
+                <div class="h-8 w-px bg-white/10"></div>
                 <div class="flex items-center gap-3">
-                    <div class="text-right hidden sm:block">
-                        <div class="text-sm font-bold text-white">管理者</div>
-                        <div class="text-xs text-text-secondary">Admin User</div>
-                    </div>
-                    <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 ring-2 ring-surface-border" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuA2dYQK4X5NIhdl1TMfrjITWMUu-sZ68PbXvujPy31ehCZ6Qbprlk5mRu1wfE2XVWpw_CGw6_OlyUX1sjlVr-DrAckpUfHHz98S7QMj2x0d14O2lX2Zaeo5TkRKK1YuMJJ9UQCyTz9hiv0Wo0rq3akC3DsJd07mvKCeAvUeku7laP-eFQA3KrVUhm5u9VlqavnLdIEsBy6C51Do8y72Xkga0r5-AkvbLf-0a9egdAWvwEVu-P89lP2Wp6dyn9eci5fNgQWHd5BdBL6x");'></div>
+                    <button class="flex items-center justify-center size-10 rounded-full bg-surface-lighter hover:bg-white/10 text-white transition-colors relative">
+                        <span class="material-symbols-outlined text-[20px]">notifications</span>
+                        <span class="absolute top-2 right-2.5 size-2 bg-violation rounded-full border border-surface-dark"></span>
+                    </button>
+                    <div class="bg-center bg-no-repeat bg-cover rounded-full size-10 border-2 border-surface-lighter" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuA-WSH1EuyyZnDvoTV0JfaeDXLoNOuD775YD06CTRVQImf7nWdzNOM5sDeReXDFUunR277CPcny0vMudsU5g2baEiJcMv97ZjQuF-pjsykzbJ3W5Dg5rJ7c359KrbKxW1xz-C-X8KV7-YZw2hFiwpGUGhevlVQxAcCaAvujjRgxvyBwhzR7FuRF8YzNWLaeXkj5e7uzZUg3_XC9CHZTvZGOV-2S_P0Wf4Q9YWxRrG3I05PALIsNbTfwl0uGcmpDYeWGTdk7faQ7GyJw");'></div>
                 </div>
             </div>
         </header>
@@ -860,25 +868,21 @@ app.get('/reports', (c) => {
                     extend: {
                         colors: {
                             "primary": "#2bee79",
-                            "primary-dark": "#23c463",
+                            "primary-dark": "#1fa855",
                             "background-light": "#f6f8f7",
-                            "background-dark": "#102217",
-                            "surface-light": "#ffffff",
-                            "surface-dark": "#1c2e24",
-                            "text-main": "#111814",
-                            "text-secondary": "#618971",
+                            "background-dark": "#101418",
+                            "surface-dark": "#1c232b",
+                            "surface-lighter": "#2a343e",
+                            "violation": "#fb4e6d",
+                            "warning": "#fbbd23",
+                            "member-badge": "#60a5fa",
+                            "staff-badge": "#34d399",
                         },
                         fontFamily: {
-                            "display": ["Spline Sans", "Noto Sans JP", "sans-serif"],
-                            "body": ["Spline Sans", "Noto Sans JP", "sans-serif"],
+                            "display": ["Spline Sans", "sans-serif"],
+                            "body": ["Noto Sans JP", "Noto Sans", "sans-serif"]
                         },
-                        borderRadius: {
-                            "DEFAULT": "0.375rem", 
-                            "lg": "0.5rem", 
-                            "xl": "0.75rem", 
-                            "2xl": "1rem", 
-                            "full": "9999px"
-                        },
+                        borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
                     },
                 },
             }
@@ -894,38 +898,32 @@ app.get('/reports', (c) => {
             }
         </style>
     </head>
-    <body class="bg-background-light dark:bg-background-dark min-h-screen flex flex-col text-text-main">
+    <body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white font-body min-h-screen flex flex-col">
         <!-- Top Navigation -->
-        <header class="sticky top-0 z-50 w-full bg-surface-light dark:bg-surface-dark border-b border-[#f0f4f2] dark:border-[#2a4034]">
-            <div class="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex items-center justify-between h-16">
-                    <!-- Logo & Brand -->
-                    <div class="flex items-center gap-3">
-                        <div class="size-8 text-primary flex items-center justify-center rounded-lg bg-background-light dark:bg-background-dark">
-                            <span class="material-symbols-outlined text-[24px]">grid_view</span>
-                        </div>
-                        <h2 class="text-xl font-bold tracking-tight text-text-main dark:text-white">ShiftMgr AI</h2>
-                    </div>
-                    <!-- Right Actions -->
-                    <div class="flex items-center gap-4">
-                        <div class="hidden md:flex gap-2">
-                            <button class="flex items-center justify-center size-10 rounded-full hover:bg-background-light dark:hover:bg-background-dark transition-colors text-text-main dark:text-white">
-                                <span class="material-symbols-outlined text-[20px]">notifications</span>
-                            </button>
-                            <button class="flex items-center justify-center size-10 rounded-full hover:bg-background-light dark:hover:bg-background-dark transition-colors text-text-main dark:text-white">
-                                <span class="material-symbols-outlined text-[20px]">settings</span>
-                            </button>
-                            <button class="flex items-center justify-center size-10 rounded-full hover:bg-background-light dark:hover:bg-background-dark transition-colors text-text-main dark:text-white">
-                                <span class="material-symbols-outlined text-[20px]">help</span>
-                            </button>
-                        </div>
-                        <div class="h-8 w-[1px] bg-gray-200 dark:bg-gray-700 hidden md:block"></div>
-                        <button class="flex items-center gap-2 pl-1 pr-2 py-1 rounded-full hover:bg-background-light dark:hover:bg-background-dark transition-colors">
-                            <div class="size-8 rounded-full bg-cover bg-center border border-gray-100" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBIvING5vstA4zqikjAkXB3ajNHmi-3mA3k880Chq6X5jQ1Z_nvu-YzPMYSUDqb5sm8toWUtFdDVqnXR0NmA3i9OLg4QvaJsGBOEH3J4f6Xc2DYyzexzaDiTZszIshI4O5kdaRYe3tIoTnh2kiUK7D51P8lQLBMg-GISMtUKCpDI9yZbsvMgrBbF6UDVnpwmt6mWpMjqnuDZx9ObHzVOV018jy_IbwGZ5NelyemSlCHNvU7A-9N54QbvFotpyLm5vd49Wl84xeSs-Q4");'></div>
-                            <span class="text-sm font-medium hidden sm:block dark:text-white">山田 管理者</span>
-                            <span class="material-symbols-outlined text-[18px] text-gray-500">expand_more</span>
-                        </button>
-                    </div>
+        <header class="flex items-center justify-between border-b border-white/5 bg-surface-dark px-6 py-3 shrink-0 z-20">
+            <div class="flex items-center gap-4 text-white">
+                <div class="flex items-center justify-center size-10 rounded-xl bg-primary/10 text-primary">
+                    <span class="material-symbols-outlined text-[28px]">smart_toy</span>
+                </div>
+                <div>
+                    <h1 class="text-white text-lg font-bold leading-tight">AIシフトマネージャー</h1>
+                    <p class="text-slate-400 text-xs font-medium">就労継続支援A型版 • v2.7</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-6">
+                <nav class="hidden md:flex gap-1 bg-surface-lighter/50 p-1 rounded-full">
+                    <a href="/" class="px-4 py-1.5 rounded-full text-slate-300 hover:bg-white/5 hover:text-white text-sm font-medium transition-colors">ダッシュボード</a>
+                    <a href="/staff" class="px-4 py-1.5 rounded-full text-slate-300 hover:bg-white/5 hover:text-white text-sm font-medium transition-colors">スタッフ管理</a>
+                    <a href="/reports" class="px-4 py-1.5 rounded-full bg-primary text-background-dark text-sm font-bold shadow-lg shadow-primary/20">実績報告</a>
+                    <a href="/settings" class="px-4 py-1.5 rounded-full text-slate-300 hover:bg-white/5 hover:text-white text-sm font-medium transition-colors">設定</a>
+                </nav>
+                <div class="h-8 w-px bg-white/10"></div>
+                <div class="flex items-center gap-3">
+                    <button class="flex items-center justify-center size-10 rounded-full bg-surface-lighter hover:bg-white/10 text-white transition-colors relative">
+                        <span class="material-symbols-outlined text-[20px]">notifications</span>
+                        <span class="absolute top-2 right-2.5 size-2 bg-violation rounded-full border border-surface-dark"></span>
+                    </button>
+                    <div class="bg-center bg-no-repeat bg-cover rounded-full size-10 border-2 border-surface-lighter" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuA-WSH1EuyyZnDvoTV0JfaeDXLoNOuD775YD06CTRVQImf7nWdzNOM5sDeReXDFUunR277CPcny0vMudsU5g2baEiJcMv97ZjQuF-pjsykzbJ3W5Dg5rJ7c359KrbKxW1xz-C-X8KV7-YZw2hFiwpGUGhevlVQxAcCaAvujjRgxvyBwhzR7FuRF8YzNWLaeXkj5e7uzZUg3_XC9CHZTvZGOV-2S_P0Wf4Q9YWxRrG3I05PALIsNbTfwl0uGcmpDYeWGTdk7faQ7GyJw");'></div>
                 </div>
             </div>
         </header>
@@ -1155,41 +1153,57 @@ app.get('/settings', (c) => {
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
         <script>
             tailwind.config = {
+                darkMode: "class",
                 theme: {
                     extend: {
                         colors: {
-                            primary: '#2bee79',
-                            background: {
-                                light: '#f6f8f7',
-                                DEFAULT: '#101418',
-                                surface: '#1a1f24'
-                            },
-                            text: {
-                                primary: '#e8e8e8',
-                                secondary: '#9ca3af'
-                            }
-                        }
-                    }
-                }
+                            "primary": "#2bee79",
+                            "primary-dark": "#1fa855",
+                            "background-light": "#f6f8f7",
+                            "background-dark": "#101418",
+                            "surface-dark": "#1c232b",
+                            "surface-lighter": "#2a343e",
+                            "violation": "#fb4e6d",
+                            "warning": "#fbbd23",
+                            "member-badge": "#60a5fa",
+                            "staff-badge": "#34d399",
+                        },
+                        fontFamily: {
+                            "display": ["Spline Sans", "sans-serif"],
+                            "body": ["Noto Sans JP", "Noto Sans", "sans-serif"]
+                        },
+                        borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+                    },
+                },
             }
         </script>
     </head>
-    <body class="bg-background-light text-gray-800">
+    <body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white font-body min-h-screen flex flex-col">
         <!-- Header -->
-        <header class="bg-white border-b border-gray-200 sticky top-0 z-50">
-            <div class="px-6 py-4 flex items-center justify-between">
-                <div class="flex items-center gap-8">
-                    <h1 class="text-2xl font-bold text-gray-900">ShiftAI</h1>
-                    <nav class="flex gap-6">
-                        <a href="/" class="text-gray-600 hover:text-gray-900 transition">Dashboard</a>
-                        <a href="/staff" class="text-gray-600 hover:text-gray-900 transition">Staff Management</a>
-                        <a href="/reports" class="text-gray-600 hover:text-gray-900 transition">Report</a>
-                        <a href="/settings" class="text-primary font-semibold border-b-2 border-primary pb-1">Settings</a>
-                    </nav>
+        <header class="flex items-center justify-between border-b border-white/5 bg-surface-dark px-6 py-3 shrink-0 z-20">
+            <div class="flex items-center gap-4 text-white">
+                <div class="flex items-center justify-center size-10 rounded-xl bg-primary/10 text-primary">
+                    <span class="material-symbols-outlined text-[28px]">smart_toy</span>
                 </div>
-                <div class="flex items-center gap-4">
-                    <span class="material-symbols-outlined text-gray-600 cursor-pointer hover:text-gray-900">notifications</span>
-                    <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-bold">A</div>
+                <div>
+                    <h1 class="text-white text-lg font-bold leading-tight">AIシフトマネージャー</h1>
+                    <p class="text-slate-400 text-xs font-medium">就労継続支援A型版 • v2.7</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-6">
+                <nav class="hidden md:flex gap-1 bg-surface-lighter/50 p-1 rounded-full">
+                    <a href="/" class="px-4 py-1.5 rounded-full text-slate-300 hover:bg-white/5 hover:text-white text-sm font-medium transition-colors">ダッシュボード</a>
+                    <a href="/staff" class="px-4 py-1.5 rounded-full text-slate-300 hover:bg-white/5 hover:text-white text-sm font-medium transition-colors">スタッフ管理</a>
+                    <a href="/reports" class="px-4 py-1.5 rounded-full text-slate-300 hover:bg-white/5 hover:text-white text-sm font-medium transition-colors">実績報告</a>
+                    <a href="/settings" class="px-4 py-1.5 rounded-full bg-primary text-background-dark text-sm font-bold shadow-lg shadow-primary/20">設定</a>
+                </nav>
+                <div class="h-8 w-px bg-white/10"></div>
+                <div class="flex items-center gap-3">
+                    <button class="flex items-center justify-center size-10 rounded-full bg-surface-lighter hover:bg-white/10 text-white transition-colors relative">
+                        <span class="material-symbols-outlined text-[20px]">notifications</span>
+                        <span class="absolute top-2 right-2.5 size-2 bg-violation rounded-full border border-surface-dark"></span>
+                    </button>
+                    <div class="bg-center bg-no-repeat bg-cover rounded-full size-10 border-2 border-surface-lighter" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuA-WSH1EuyyZnDvoTV0JfaeDXLoNOuD775YD06CTRVQImf7nWdzNOM5sDeReXDFUunR277CPcny0vMudsU5g2baEiJcMv97ZjQuF-pjsykzbJ3W5Dg5rJ7c359KrbKxW1xz-C-X8KV7-YZw2hFiwpGUGhevlVQxAcCaAvujjRgxvyBwhzR7FuRF8YzNWLaeXkj5e7uzZUg3_XC9CHZTvZGOV-2S_P0Wf4Q9YWxRrG3I05PALIsNbTfwl0uGcmpDYeWGTdk7faQ7GyJw");'></div>
                 </div>
             </div>
         </header>
