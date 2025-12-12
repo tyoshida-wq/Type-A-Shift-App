@@ -1,7 +1,16 @@
 import { Hono } from 'hono'
 import { serveStatic } from 'hono/cloudflare-workers'
+import { cors } from 'hono/cors'
 
-const app = new Hono()
+// Type definitions for Cloudflare bindings
+type Bindings = {
+  DB: D1Database
+}
+
+const app = new Hono<{ Bindings: Bindings }>()
+
+// Enable CORS for API routes
+app.use('/api/*', cors())
 
 // Serve static files from public/static directory
 app.use('/static/*', serveStatic({ root: './public' }))
@@ -493,6 +502,198 @@ app.get('/', (c) => {
     </html>
   `)
 })
+
+// ============================================================================
+// API Routes
+// ============================================================================
+
+// Get all users/staff
+app.get('/api/users', async (c) => {
+  const { DB } = c.env
+  const type = c.req.query('type') // 'staff' | 'user' | undefined (all)
+  
+  try {
+    let query = 'SELECT * FROM users'
+    const params: string[] = []
+    
+    if (type) {
+      query += ' WHERE type = ?'
+      params.push(type)
+    }
+    
+    query += ' ORDER BY created_at DESC'
+    
+    const { results } = await DB.prepare(query).bind(...params).all()
+    
+    // Get skills, characteristics, and relationships for each user
+    for (const user of results) {
+      const { results: skills } = await DB.prepare('SELECT * FROM skills WHERE user_id = ?').bind(user.id).all()
+      const { results: characteristics } = await DB.prepare('SELECT * FROM characteristics WHERE user_id = ?').bind(user.id).all()
+      const { results: relationships } = await DB.prepare('SELECT * FROM relationships WHERE user_id = ?').bind(user.id).all()
+      
+      user.skills = skills
+      user.characteristics = characteristics.map((c: any) => c.tag)
+      user.ngPairs = relationships.filter((r: any) => r.type === 'ng').map((r: any) => r.related_user_id)
+      user.recommendedPairs = relationships.filter((r: any) => r.type === 'recommended').map((r: any) => r.related_user_id)
+      user.workDays = JSON.parse(user.work_days || '[]')
+    }
+    
+    return c.json({ success: true, data: results })
+  } catch (error) {
+    return c.json({ success: false, error: error.message }, 500)
+  }
+})
+
+// Get single user by ID
+app.get('/api/users/:id', async (c) => {
+  const { DB } = c.env
+  const id = c.req.param('id')
+  
+  try {
+    const { results } = await DB.prepare('SELECT * FROM users WHERE id = ?').bind(id).all()
+    
+    if (results.length === 0) {
+      return c.json({ success: false, error: 'User not found' }, 404)
+    }
+    
+    const user = results[0]
+    const { results: skills } = await DB.prepare('SELECT * FROM skills WHERE user_id = ?').bind(id).all()
+    const { results: characteristics } = await DB.prepare('SELECT * FROM characteristics WHERE user_id = ?').bind(id).all()
+    const { results: relationships } = await DB.prepare('SELECT * FROM relationships WHERE user_id = ?').bind(id).all()
+    
+    user.skills = skills
+    user.characteristics = characteristics.map((c: any) => c.tag)
+    user.ngPairs = relationships.filter((r: any) => r.type === 'ng').map((r: any) => r.related_user_id)
+    user.recommendedPairs = relationships.filter((r: any) => r.type === 'recommended').map((r: any) => r.related_user_id)
+    user.workDays = JSON.parse(user.work_days || '[]')
+    
+    return c.json({ success: true, data: user })
+  } catch (error) {
+    return c.json({ success: false, error: error.message }, 500)
+  }
+})
+
+// Get all sites
+app.get('/api/sites', async (c) => {
+  const { DB } = c.env
+  
+  try {
+    const { results } = await DB.prepare('SELECT * FROM sites ORDER BY created_at DESC').all()
+    
+    // Get required skills for each site
+    for (const site of results) {
+      const { results: skills } = await DB.prepare('SELECT skill_name FROM site_required_skills WHERE site_id = ?').bind(site.id).all()
+      site.requiredSkills = skills.map((s: any) => s.skill_name)
+    }
+    
+    return c.json({ success: true, data: results })
+  } catch (error) {
+    return c.json({ success: false, error: error.message }, 500)
+  }
+})
+
+// Get shifts by date range
+app.get('/api/shifts', async (c) => {
+  const { DB } = c.env
+  const startDate = c.req.query('start_date')
+  const endDate = c.req.query('end_date')
+  const userId = c.req.query('user_id')
+  
+  try {
+    let query = 'SELECT * FROM shifts WHERE 1=1'
+    const params: string[] = []
+    
+    if (startDate) {
+      query += ' AND date >= ?'
+      params.push(startDate)
+    }
+    
+    if (endDate) {
+      query += ' AND date <= ?'
+      params.push(endDate)
+    }
+    
+    if (userId) {
+      query += ' AND user_id = ?'
+      params.push(userId)
+    }
+    
+    query += ' ORDER BY date, start_time'
+    
+    const { results } = await DB.prepare(query).bind(...params).all()
+    return c.json({ success: true, data: results })
+  } catch (error) {
+    return c.json({ success: false, error: error.message }, 500)
+  }
+})
+
+// Get app rules
+app.get('/api/rules', async (c) => {
+  const { DB } = c.env
+  
+  try {
+    const { results } = await DB.prepare('SELECT * FROM app_rules').all()
+    const rules: Record<string, any> = {}
+    
+    for (const rule of results as any[]) {
+      rules[rule.rule_key] = rule.rule_type === 'number' ? parseFloat(rule.rule_value) : rule.rule_value
+    }
+    
+    return c.json({ success: true, data: rules })
+  } catch (error) {
+    return c.json({ success: false, error: error.message }, 500)
+  }
+})
+
+// Update app rules
+app.post('/api/rules', async (c) => {
+  const { DB } = c.env
+  const body = await c.req.json()
+  
+  try {
+    for (const [key, value] of Object.entries(body)) {
+      await DB.prepare(
+        'UPDATE app_rules SET rule_value = ?, updated_at = CURRENT_TIMESTAMP WHERE rule_key = ?'
+      ).bind(String(value), key).run()
+    }
+    
+    return c.json({ success: true, message: 'Rules updated successfully' })
+  } catch (error) {
+    return c.json({ success: false, error: error.message }, 500)
+  }
+})
+
+// Update site
+app.put('/api/sites/:id', async (c) => {
+  const { DB } = c.env
+  const id = c.req.param('id')
+  const body = await c.req.json()
+  
+  try {
+    await DB.prepare(
+      'UPDATE sites SET name = ?, min_staff = ?, recommended_staff = ?, staff_always_present = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?'
+    ).bind(body.name, body.min_staff, body.recommended_staff, body.staff_always_present ? 1 : 0, id).run()
+    
+    // Update required skills
+    await DB.prepare('DELETE FROM site_required_skills WHERE site_id = ?').bind(id).run()
+    
+    if (body.requiredSkills && body.requiredSkills.length > 0) {
+      for (const skill of body.requiredSkills) {
+        await DB.prepare(
+          'INSERT INTO site_required_skills (site_id, skill_name) VALUES (?, ?)'
+        ).bind(id, skill).run()
+      }
+    }
+    
+    return c.json({ success: true, message: 'Site updated successfully' })
+  } catch (error) {
+    return c.json({ success: false, error: error.message }, 500)
+  }
+})
+
+// ============================================================================
+// Page Routes
+// ============================================================================
 
 // Staff management page (existing implementation)
 app.get('/staff', (c) => {
