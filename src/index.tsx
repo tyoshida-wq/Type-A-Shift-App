@@ -1138,4 +1138,264 @@ app.get('/reports', (c) => {
   `)
 })
 
+// Settings page route
+app.get('/settings', (c) => {
+  return c.html(`
+    <!DOCTYPE html>
+    <html class="light" lang="ja">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>設定画面 - ShiftAI</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Spline+Sans:wght@300;400;500;600;700&family=Noto+Sans+JP:wght@300;400;500;700;900&display=swap');
+            * { font-family: 'Spline Sans', 'Noto Sans JP', sans-serif; }
+        </style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+        <script>
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        colors: {
+                            primary: '#2bee79',
+                            background: {
+                                light: '#f6f8f7',
+                                DEFAULT: '#101418',
+                                surface: '#1a1f24'
+                            },
+                            text: {
+                                primary: '#e8e8e8',
+                                secondary: '#9ca3af'
+                            }
+                        }
+                    }
+                }
+            }
+        </script>
+    </head>
+    <body class="bg-background-light text-gray-800">
+        <!-- Header -->
+        <header class="bg-white border-b border-gray-200 sticky top-0 z-50">
+            <div class="px-6 py-4 flex items-center justify-between">
+                <div class="flex items-center gap-8">
+                    <h1 class="text-2xl font-bold text-gray-900">ShiftAI</h1>
+                    <nav class="flex gap-6">
+                        <a href="/" class="text-gray-600 hover:text-gray-900 transition">Dashboard</a>
+                        <a href="/staff" class="text-gray-600 hover:text-gray-900 transition">Staff Management</a>
+                        <a href="/reports" class="text-gray-600 hover:text-gray-900 transition">Report</a>
+                        <a href="/settings" class="text-primary font-semibold border-b-2 border-primary pb-1">Settings</a>
+                    </nav>
+                </div>
+                <div class="flex items-center gap-4">
+                    <span class="material-symbols-outlined text-gray-600 cursor-pointer hover:text-gray-900">notifications</span>
+                    <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-bold">A</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="max-w-7xl mx-auto p-8 space-y-8 pb-32">
+            <!-- Site Master Settings -->
+            <section class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-900 mb-1">サイトマスタ設定</h2>
+                        <p class="text-sm text-gray-600">作業所や事業所の基本情報を管理します (20件)</p>
+                    </div>
+                    <button class="px-6 py-2.5 bg-primary text-white rounded-lg hover:bg-primary/90 transition flex items-center gap-2 font-medium">
+                        <span class="material-symbols-outlined text-xl">add</span>
+                        新規追加
+                    </button>
+                </div>
+
+                <!-- Site List -->
+                <div class="space-y-4 max-h-[600px] overflow-y-auto pr-2">
+                    <!-- Site 1 -->
+                    <div class="border border-gray-200 rounded-xl p-5 hover:border-primary/30 transition bg-gray-50/50">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="flex-1">
+                                <input type="text" value="第一作業所" class="text-lg font-semibold text-gray-900 bg-transparent border-none focus:outline-none focus:ring-2 focus:ring-primary/20 rounded px-2 -ml-2 w-full">
+                                <p class="text-sm text-gray-500 mt-1 px-2">ID: SITE-001</p>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <label class="flex items-center gap-2 text-sm">
+                                    <input type="checkbox" checked class="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary">
+                                    <span class="text-gray-700 font-medium">職員常駐</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4 mb-4">
+                            <div>
+                                <label class="block text-xs font-medium text-gray-600 mb-2">最小職員数</label>
+                                <input type="number" value="2" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/30 focus:border-primary">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-gray-600 mb-2">推奨職員数</label>
+                                <input type="number" value="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/30 focus:border-primary">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-2">必須スキル</label>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium flex items-center gap-1">
+                                    送迎可能
+                                    <span class="material-symbols-outlined text-base cursor-pointer hover:text-red-500">close</span>
+                                </span>
+                                <span class="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium flex items-center gap-1">
+                                    看護師
+                                    <span class="material-symbols-outlined text-base cursor-pointer hover:text-red-500">close</span>
+                                </span>
+                                <button class="px-3 py-1 border border-dashed border-gray-300 text-gray-600 rounded-full text-sm hover:border-primary hover:text-primary transition">
+                                    + スキル追加
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Site 2 -->
+                    <div class="border border-gray-200 rounded-xl p-5 hover:border-primary/30 transition bg-gray-50/50">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="flex-1">
+                                <input type="text" value="品川配送センター" class="text-lg font-semibold text-gray-900 bg-transparent border-none focus:outline-none focus:ring-2 focus:ring-primary/20 rounded px-2 -ml-2 w-full">
+                                <p class="text-sm text-gray-500 mt-1 px-2">ID: SITE-002</p>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <label class="flex items-center gap-2 text-sm">
+                                    <input type="checkbox" class="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary">
+                                    <span class="text-gray-700 font-medium">職員常駐</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4 mb-4">
+                            <div>
+                                <label class="block text-xs font-medium text-gray-600 mb-2">最小職員数</label>
+                                <input type="number" value="1" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/30 focus:border-primary">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-gray-600 mb-2">推奨職員数</label>
+                                <input type="number" value="2" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/30 focus:border-primary">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-2">必須スキル</label>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium flex items-center gap-1">
+                                    ドライバー
+                                    <span class="material-symbols-outlined text-base cursor-pointer hover:text-red-500">close</span>
+                                </span>
+                                <span class="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium flex items-center gap-1">
+                                    フォークリフト
+                                    <span class="material-symbols-outlined text-base cursor-pointer hover:text-red-500">close</span>
+                                </span>
+                                <button class="px-3 py-1 border border-dashed border-gray-300 text-gray-600 rounded-full text-sm hover:border-primary hover:text-primary transition">
+                                    + スキル追加
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Site 3 -->
+                    <div class="border border-gray-200 rounded-xl p-5 hover:border-primary/30 transition bg-gray-50/50">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="flex-1">
+                                <input type="text" value="第二作業所" class="text-lg font-semibold text-gray-900 bg-transparent border-none focus:outline-none focus:ring-2 focus:ring-primary/20 rounded px-2 -ml-2 w-full">
+                                <p class="text-sm text-gray-500 mt-1 px-2">ID: SITE-003</p>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <label class="flex items-center gap-2 text-sm">
+                                    <input type="checkbox" checked class="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary">
+                                    <span class="text-gray-700 font-medium">職員常駐</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4 mb-4">
+                            <div>
+                                <label class="block text-xs font-medium text-gray-600 mb-2">最小職員数</label>
+                                <input type="number" value="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/30 focus:border-primary">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-gray-600 mb-2">推奨職員数</label>
+                                <input type="number" value="4" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/30 focus:border-primary">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-2">必須スキル</label>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium flex items-center gap-1">
+                                    送迎可能
+                                    <span class="material-symbols-outlined text-base cursor-pointer hover:text-red-500">close</span>
+                                </span>
+                                <span class="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium flex items-center gap-1">
+                                    調理師
+                                    <span class="material-symbols-outlined text-base cursor-pointer hover:text-red-500">close</span>
+                                </span>
+                                <button class="px-3 py-1 border border-dashed border-gray-300 text-gray-600 rounded-full text-sm hover:border-primary hover:text-primary transition">
+                                    + スキル追加
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- App Rules Settings -->
+            <section class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-1">アプリルール設定</h2>
+                    <p class="text-sm text-gray-600">システム全体のルールとアラート条件を設定します</p>
+                </div>
+
+                <div class="space-y-6">
+                    <!-- Placement Standard -->
+                    <div class="border border-gray-200 rounded-xl p-5 bg-gray-50/50">
+                        <label class="block text-sm font-semibold text-gray-900 mb-3">配置基準値</label>
+                        <div class="flex items-center gap-3">
+                            <input type="number" step="0.1" value="7.5" class="w-32 px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/30 focus:border-primary font-medium text-lg">
+                            <span class="text-gray-600">時間/日</span>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-2">※ 利用者1人あたりに必要な職員の配置時間</p>
+                    </div>
+
+                    <!-- Consecutive Work Alert -->
+                    <div class="border border-gray-200 rounded-xl p-5 bg-gray-50/50">
+                        <label class="block text-sm font-semibold text-gray-900 mb-3">連続勤務アラート</label>
+                        <div class="space-y-3">
+                            <div class="flex items-center gap-3">
+                                <span class="text-sm text-gray-700 min-w-[180px]">最大連続勤務日数</span>
+                                <input type="number" value="5" class="w-24 px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/30 focus:border-primary font-medium">
+                                <span class="text-gray-600">日</span>
+                            </div>
+                            <p class="text-xs text-gray-500">※ 設定日数を超えると警告を表示します</p>
+                        </div>
+                    </div>
+
+                    <!-- Other Rules (Placeholder) -->
+                    <div class="border border-dashed border-gray-300 rounded-xl p-5 text-center">
+                        <button class="text-primary hover:text-primary/80 font-medium flex items-center gap-2 mx-auto">
+                            <span class="material-symbols-outlined">add_circle</span>
+                            新しいルールを追加
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Floating Action Bar -->
+        <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg">
+            <div class="max-w-7xl mx-auto px-8 py-4 flex items-center justify-end gap-4">
+                <button class="px-6 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition font-medium">
+                    キャンセル
+                </button>
+                <button class="px-8 py-2.5 bg-primary text-white rounded-lg hover:bg-primary/90 transition font-medium flex items-center gap-2">
+                    <span class="material-symbols-outlined text-xl">save</span>
+                    変更を保存
+                </button>
+            </div>
+        </div>
+    </body>
+    </html>
+  `)
+})
+
 export default app
