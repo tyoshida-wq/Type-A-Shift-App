@@ -11,8 +11,8 @@
   "d1_databases": [
     {
       "binding": "DB",
-      "database_name": "webapp-production",
-      "database_id": "placeholder-will-be-replaced-after-creation"
+      "database_name": "shift-ai-production",
+      "database_id": "bae10bc4-6b18-4bca-bb5a-170e15b8cd18"
     }
   ]
 }
