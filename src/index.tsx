@@ -127,7 +127,7 @@ app.get('/', (c) => {
                     <a href="/" class="px-4 py-1.5 rounded-full bg-primary text-background-dark text-sm font-bold shadow-lg shadow-primary/20">ダッシュボード</a>
                     <a href="/staff" class="px-4 py-1.5 rounded-full text-slate-300 hover:bg-white/5 hover:text-white text-sm font-medium transition-colors">スタッフ管理</a>
                     <a href="/reports" class="px-4 py-1.5 rounded-full text-slate-300 hover:bg-white/5 hover:text-white text-sm font-medium transition-colors">実績報告</a>
-                    <button class="px-4 py-1.5 rounded-full text-slate-300 hover:bg-white/5 hover:text-white text-sm font-medium transition-colors">設定</button>
+                    <a href="/settings" class="px-4 py-1.5 rounded-full text-slate-300 hover:bg-white/5 hover:text-white text-sm font-medium transition-colors">設定</a>
                 </nav>
                 <div class="h-8 w-px bg-white/10"></div>
                 <div class="flex items-center gap-3">
