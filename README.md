@@ -1,21 +1,125 @@
-```txt
-npm install
+# ShiftAI Manager
+
+## プロジェクト概要
+- **名前**: ShiftAI Manager
+- **目的**: 社員・利用者の管理を行うダークテーマの管理システムUI
+- **主要機能**: 
+  - ユーザー/スタッフのリスト表示と検索
+  - 詳細プロフィール表示（基本情報、スキル、人間関係）
+  - 契約出勤日の視覚化
+  - スキルレベルの星評価表示
+  - NGペア・推奨ペアの管理
+
+## 公開URL
+- **開発環境**: https://3000-ipt4wtfiyly5o9p3kw99a-8f57ffe2.sandbox.novita.ai
+- **本番環境**: 未デプロイ
+- **GitHub**: 未設定
+
+## データ構造
+- **データモデル**: 
+  - ユーザー情報（ID、名前、連絡先、入社日）
+  - スキル情報（スキル名、レベル1-5）
+  - 特性タグ（立ち仕事NG、聴覚過敏など）
+  - 人間関係（NGペア、推奨ペア）
+  - 契約出勤日（月〜日の7日間）
+- **ストレージ**: 現在はモックデータ（メモリ内）
+- **今後の拡張**: Cloudflare D1データベースへの移行を推奨
+
+## 完成した機能
+1. ✅ ダークテーマUI実装
+2. ✅ 左サイドバーのユーザーリスト表示
+3. ✅ 検索バー（UI実装済み、機能は未実装）
+4. ✅ 社員/利用者の切り替えセグメントコントロール
+5. ✅ 詳細プロフィール表示
+   - 基本情報・連絡先セクション
+   - 契約出勤日の視覚化
+   - 送迎必要性トグル
+   - スキル・特性セクション（星評価表示）
+   - 人間関係セクション（NGペア・推奨ペア）
+6. ✅ 編集・削除ボタン（UI実装済み、機能は未実装）
+7. ✅ CSVインポート/エクスポートボタン（UI実装済み、機能は未実装）
+8. ✅ タブナビゲーション（基本情報、スキル・特性、人間関係、活動履歴）
+
+## 未実装の機能
+1. ❌ ユーザー検索機能
+2. ❌ ユーザー編集・削除機能
+3. ❌ CSVインポート/エクスポート機能
+4. ❌ タブ切り替え機能（現在は基本情報タブのみ表示）
+5. ❌ 活動履歴タブのコンテンツ
+6. ❌ データベース連携（D1）
+7. ❌ ユーザー追加機能
+8. ❌ リアルタイム検索フィルタリング
+9. ❌ ページネーション
+
+## 推奨される次のステップ
+1. **データベース統合**: Cloudflare D1を使用してユーザーデータを永続化
+2. **検索機能の実装**: リアルタイムでユーザーを検索・フィルタリング
+3. **CRUD操作の実装**: ユーザーの作成・編集・削除機能
+4. **タブ機能の実装**: 各タブのコンテンツ切り替えを実装
+5. **CSV機能の実装**: インポート/エクスポート機能を追加
+6. **認証機能の追加**: 管理者ログイン機能
+7. **レスポンシブ対応の強化**: モバイル表示の最適化
+
+## ユーザーガイド
+このアプリケーションは、障害者就労支援施設や福祉事業所向けのシフト管理システムのユーザー管理画面です。
+
+### 使い方
+1. **ユーザーリストの表示**: 左サイドバーにユーザーが一覧表示されます
+2. **ユーザー選択**: ユーザーをクリックすると、右側に詳細情報が表示されます
+3. **情報確認**: 
+   - 基本情報: 連絡先、住所、契約出勤日、送迎の必要性
+   - スキル: 組立作業、清掃、PC入力などのスキルレベル
+   - 人間関係: NGペアや推奨ペアの確認
+4. **フィルタリング**: 「社員 (Staff)」と「利用者 (User)」を切り替え可能（現在は利用者のみ表示）
+
+### デザインの特徴
+- **ダークテーマ**: 目に優しい暗色デザイン
+- **グリーンアクセント**: プライマリカラー「#2bee79」で重要な要素を強調
+- **Material Symbolsアイコン**: Google Fontsのアイコンを使用
+- **日本語対応**: Noto Sans JPフォントで美しい日本語表示
+
+## デプロイ情報
+- **プラットフォーム**: Cloudflare Pages
+- **ステータス**: ✅ 開発環境で稼働中
+- **技術スタック**: 
+  - バックエンド: Hono + TypeScript
+  - フロントエンド: Tailwind CSS (CDN)
+  - アイコン: Material Symbols (Google Fonts)
+  - フォント: Spline Sans + Noto Sans JP
+- **最終更新日**: 2025-12-12
+
+## 開発コマンド
+```bash
+# 開発サーバー起動（Vite）
 npm run dev
+
+# ビルド
+npm run build
+
+# サンドボックス開発サーバー起動（PM2）
+npm run clean-port
+pm2 start ecosystem.config.cjs
+
+# デプロイ（Cloudflare Pages）
+npm run deploy:prod
+
+# Git操作
+npm run git:status
+npm run git:commit "コミットメッセージ"
 ```
 
-```txt
-npm run deploy
+## プロジェクト構造
 ```
-
-[For generating/synchronizing types based on your Worker configuration run](https://developers.cloudflare.com/workers/wrangler/commands/#types):
-
-```txt
-npm run cf-typegen
-```
-
-Pass the `CloudflareBindings` as generics when instantiation `Hono`:
-
-```ts
-// src/index.ts
-const app = new Hono<{ Bindings: CloudflareBindings }>()
+webapp/
+├── src/
+│   ├── index.tsx          # メインアプリケーション
+│   └── renderer.tsx       # レンダラー設定
+├── public/
+│   └── static/
+│       └── style.css      # カスタムCSS（予約）
+├── dist/                  # ビルド出力
+├── ecosystem.config.cjs   # PM2設定
+├── wrangler.jsonc         # Cloudflare設定
+├── package.json           # 依存関係
+└── README.md              # このファイル
 ```
